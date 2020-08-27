@@ -68,35 +68,25 @@ public class StudentEditActivity extends AppCompatActivity {
                 hostel = hostelEditText.getText().toString();
                 phone = phoneEditText.getText().toString();
 
-                Map<String, Object> studentData = new HashMap<>();
+                /*Map<String, Object> studentData = new HashMap<>();
                 studentData.put("Name", name);
                 studentData.put("Roll Number", roll);
                 studentData.put("Hostel", hostel);
                 studentData.put("Phone Number", phone);
+                 */
 
-               reference.child("Users").child("Student").updateChildren(studentData).addOnCompleteListener(new OnCompleteListener<Void>() {
-                   @Override
-                   public void onComplete(@NonNull Task<Void> task)
-                   {
-                       if(task.isSuccessful())
-                       {
-                           Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
+                reference.child("Users").child("Student").child("Name").setValue(name);
+                reference.child("Users").child("Student").child("Roll Number").setValue(roll);
+                reference.child("Users").child("Student").child("Hostel").setValue(hostel);
+                reference.child("Users").child("Student").child("Phone Number").setValue(phone);
 
-                           StudentProfileActivity.nameTextView.setText(name);
-                           StudentProfileActivity.rollNumberTextView.setText(roll);
-                           StudentProfileActivity.hostelTextView.setText(hostel);
-                           StudentProfileActivity.phoneTextView.setText(phone);
+                StudentProfileActivity.nameTextView.setText(name);
+                StudentProfileActivity.rollNumberTextView.setText(roll);
+                StudentProfileActivity.hostelTextView.setText(hostel);
+                StudentProfileActivity.phoneTextView.setText(phone);
 
-                           Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
-                           startActivity(i);
-                       }
-
-                       else
-                       {
-                           Toast.makeText(getApplicationContext(), "Failed! Try again", Toast.LENGTH_SHORT).show();
-                       }
-                   }
-               });
+                Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
+                startActivity(i);
 
                 /*firestore.collection("Users").document("Students").set(studentData).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

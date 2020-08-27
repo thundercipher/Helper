@@ -37,7 +37,6 @@ public class StudentProfileActivity extends AppCompatActivity {
     ImageView profilePicImageView, updatePhotoImageView;
     FirebaseDatabase database;
     DatabaseReference reference;
-    ProgressBar progressBar;
 
     public void edit(View view)
     {
@@ -67,8 +66,6 @@ public class StudentProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                progressBar.setVisibility(View.VISIBLE);
-
                 for(DataSnapshot snap : snapshot.getChildren())
                 {
                     if(snap.hasChild("Name"))
@@ -83,16 +80,14 @@ public class StudentProfileActivity extends AppCompatActivity {
 
                     else if(snap.hasChild("Hostel"))
                     {
-                        rollNumberTextView.setText(snap.child("Hostel").getValue().toString());
+                        hostelTextView.setText(snap.child("Hostel").getValue().toString());
                     }
 
                     else if(snap.hasChild("Phone Number"))
                     {
-                        rollNumberTextView.setText(snap.child("Phone Number").getValue().toString());
+                        phoneTextView.setText(snap.child("Phone Number").getValue().toString());
                     }
                 }
-
-                progressBar.setVisibility(View.GONE);
             }
 
             @Override

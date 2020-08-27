@@ -13,12 +13,17 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -28,15 +33,14 @@ import java.util.Map;
 
 public class StudentProfileActivity extends AppCompatActivity {
 
-    static TextView nameTextView, rollNumberTextView, hostelTextView, phoneTextView;
+    TextView nameTextView, rollNumberTextView, hostelTextView, phoneTextView;
     ImageView profilePicImageView, updatePhotoImageView;
-    //FirebaseFirestore firestore;
     FirebaseDatabase database;
-    boolean flag = true;
+    DatabaseReference reference;
+    ProgressBar progressBar;
 
     public void edit(View view)
     {
-        flag = false;
         Intent i = new Intent(getApplicationContext(), StudentEditActivity.class);
         startActivity(i);
     }
@@ -54,22 +58,53 @@ public class StudentProfileActivity extends AppCompatActivity {
         updatePhotoImageView = (ImageView)findViewById(R.id.updatePhotoimageView);
 
         //firestore = FirebaseFirestore.getInstance();
-        database = FirebaseDatabase.getInstance();
         Intent i = getIntent();
+        database = FirebaseDatabase.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference().child("Users").child("Student");
 
-        if(flag)
+        reference.addValueEventListener(new ValueEventListener()
         {
-            Map<String, Object> studentData = new HashMap<>();
-            studentData.put("Name", nameTextView.getText().toString());
-            studentData.put("Roll Number", rollNumberTextView.getText().toString());
-            studentData.put("Hostel", hostelTextView.getText().toString());
-            studentData.put("Phone Number", phoneTextView.getText().toString());
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                progressBar.setVisibility(View.VISIBLE);
 
-            //firestore.collection("Users").document("Students").set(studentData);
-            database.getReference().child("Users").child("Student").updateChildren(studentData);
-        }
+                for(DataSnapshot snap : snapshot.getChildren())
+                {
+                    if(snap.hasChild("Name"))
+                    {
+                        nameTextView.setText(snap.child("Name").getValue().toString());
+                    }
 
-        /*if(!flag)
+                    else if(snap.hasChild("Roll Number"))
+                    {
+                        rollNumberTextView.setText(snap.child("Roll Number").getValue().toString());
+                    }
+
+                    else if(snap.hasChild("Hostel"))
+                    {
+                        rollNumberTextView.setText(snap.child("Hostel").getValue().toString());
+                    }
+
+                    else if(snap.hasChild("Phone Number"))
+                    {
+                        rollNumberTextView.setText(snap.child("Phone Number").getValue().toString());
+                    }
+                }
+
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                Toast.makeText(getApplicationContext(), "Failed to retrieve information!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+}
+
+/*if(!flag)
         {
             Toast.makeText(getApplicationContext(), "I'm running!", Toast.LENGTH_SHORT).show();
 
@@ -90,5 +125,3 @@ public class StudentProfileActivity extends AppCompatActivity {
             });
         }
         */
-    }
-}

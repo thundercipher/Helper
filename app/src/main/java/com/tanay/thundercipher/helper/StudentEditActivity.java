@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,7 +32,6 @@ public class StudentEditActivity extends AppCompatActivity {
 
     EditText nameEditText, rollNumberEditText, hostelEditText, phoneEditText;
     Button saveButton;
-    FirebaseFirestore firestore;
     FirebaseDatabase database;
     DatabaseReference reference;
     String name, roll, hostel, phone;
@@ -46,17 +46,9 @@ public class StudentEditActivity extends AppCompatActivity {
         hostelEditText = (EditText)findViewById(R.id.hostelEditText);
         phoneEditText = (EditText)findViewById(R.id.phoneEditText);
         saveButton = (Button)findViewById(R.id.saveButton);
-
         Intent intent = getIntent();
-        firestore = FirebaseFirestore.getInstance();
-        database = FirebaseDatabase.getInstance();
-        reference = FirebaseDatabase.getInstance().getReference().child("Student");
 
-        /*name = StudentProfileActivity.nameTextView.getText().toString();
-        roll = StudentProfileActivity.rollNumberTextView.getText().toString();
-        hostel = StudentProfileActivity.hostelTextView.getText().toString();
-        phone = StudentProfileActivity.phoneTextView.getText().toString();
-         */
+        database = FirebaseDatabase.getInstance();
 
         saveButton.setOnClickListener(new View.OnClickListener()
         {
@@ -68,27 +60,41 @@ public class StudentEditActivity extends AppCompatActivity {
                 hostel = hostelEditText.getText().toString();
                 phone = phoneEditText.getText().toString();
 
-                /*Map<String, Object> studentData = new HashMap<>();
+                Map<String, Object> studentData = new HashMap<>();
                 studentData.put("Name", name);
                 studentData.put("Roll Number", roll);
                 studentData.put("Hostel", hostel);
                 studentData.put("Phone Number", phone);
-                 */
 
-                reference.child("Users").child("Student").child("Name").setValue(name);
-                reference.child("Users").child("Student").child("Roll Number").setValue(roll);
-                reference.child("Users").child("Student").child("Hostel").setValue(hostel);
-                reference.child("Users").child("Student").child("Phone Number").setValue(phone);
+                //firestore.collection("Users").document("Students").set(studentData);
+                database.getReference().child("Users").child("Student").updateChildren(studentData)
 
-                StudentProfileActivity.nameTextView.setText(name);
-                StudentProfileActivity.rollNumberTextView.setText(roll);
-                StudentProfileActivity.hostelTextView.setText(hostel);
-                StudentProfileActivity.phoneTextView.setText(phone);
+                        .addOnSuccessListener(new OnSuccessListener<Void>()
+                        {
+                            @Override
+                            public void onSuccess(Void aVoid)
+                            {
+                                Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
 
-                Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
-                startActivity(i);
+                                Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
+                                startActivity(i);
+                            }
+                        })
 
-                /*firestore.collection("Users").document("Students").set(studentData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        .addOnFailureListener(new OnFailureListener()
+                        {
+                            @Override
+                            public void onFailure(@NonNull Exception e)
+                            {
+                                Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+    }
+}
+
+/*firestore.collection("Users").document("Students").set(studentData).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task)
                     {
@@ -180,7 +186,3 @@ public class StudentEditActivity extends AppCompatActivity {
                             }
                         });
                  */
-            }
-        });
-    }
-}

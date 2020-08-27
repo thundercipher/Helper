@@ -33,7 +33,6 @@ public class StudentEditActivity extends AppCompatActivity {
     EditText nameEditText, rollNumberEditText, hostelEditText, phoneEditText;
     Button saveButton;
     FirebaseDatabase database;
-    DatabaseReference reference;
     String name, roll, hostel, phone;
 
     @Override

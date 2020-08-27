@@ -15,6 +15,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -27,27 +32,9 @@ public class StudentEditActivity extends AppCompatActivity {
     EditText nameEditText, rollNumberEditText, hostelEditText, phoneEditText;
     Button saveButton;
     FirebaseFirestore firestore;
+    FirebaseDatabase database;
+    DatabaseReference reference;
     String name, roll, hostel, phone;
-    /*boolean field1 = false;
-    boolean field2 = false;
-    boolean field3 = false;
-    boolean field4 = false;
-
-    public void navigateBack(boolean f1, boolean f2, boolean f3, boolean f4)
-    {
-        if(f1 && f2 && f3 && f4)
-        {
-            Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
-            startActivity(i);
-        }
-
-        else
-        {
-            Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
-        }
-    }
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +49,8 @@ public class StudentEditActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         firestore = FirebaseFirestore.getInstance();
+        database = FirebaseDatabase.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference().child("Student");
 
         /*name = StudentProfileActivity.nameTextView.getText().toString();
         roll = StudentProfileActivity.rollNumberTextView.getText().toString();
@@ -85,6 +74,30 @@ public class StudentEditActivity extends AppCompatActivity {
                 studentData.put("Hostel", hostel);
                 studentData.put("Phone Number", phone);
 
+               reference.child("Users").child("Student").updateChildren(studentData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                   @Override
+                   public void onComplete(@NonNull Task<Void> task)
+                   {
+                       if(task.isSuccessful())
+                       {
+                           Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
+
+                           StudentProfileActivity.nameTextView.setText(name);
+                           StudentProfileActivity.rollNumberTextView.setText(roll);
+                           StudentProfileActivity.hostelTextView.setText(hostel);
+                           StudentProfileActivity.phoneTextView.setText(phone);
+
+                           Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
+                           startActivity(i);
+                       }
+
+                       else
+                       {
+                           Toast.makeText(getApplicationContext(), "Failed! Try again", Toast.LENGTH_SHORT).show();
+                       }
+                   }
+               });
+
                 /*firestore.collection("Users").document("Students").set(studentData).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task)
@@ -103,7 +116,7 @@ public class StudentEditActivity extends AppCompatActivity {
                 });
                 */
 
-                DocumentReference reference = firestore.collection("Users").document("Students");
+                /*DocumentReference reference = firestore.collection("Users").document("Students");
 
                 reference
                         .update("Name", name)
@@ -176,11 +189,7 @@ public class StudentEditActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Failed. Try again!", Toast.LENGTH_SHORT).show();
                             }
                         });
-
-                //navigateBack(field1, field2, field3, field4);
-                Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
-                startActivity(i);
+                 */
             }
         });
     }

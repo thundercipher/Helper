@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,7 +30,8 @@ public class StudentProfileActivity extends AppCompatActivity {
 
     static TextView nameTextView, rollNumberTextView, hostelTextView, phoneTextView;
     ImageView profilePicImageView, updatePhotoImageView;
-    FirebaseFirestore firestore;
+    //FirebaseFirestore firestore;
+    FirebaseDatabase database;
     boolean flag = true;
 
     public void edit(View view)
@@ -51,7 +53,8 @@ public class StudentProfileActivity extends AppCompatActivity {
         phoneTextView = (TextView)findViewById(R.id.phoneTextView);
         updatePhotoImageView = (ImageView)findViewById(R.id.updatePhotoimageView);
 
-        firestore = FirebaseFirestore.getInstance();
+        //firestore = FirebaseFirestore.getInstance();
+        database = FirebaseDatabase.getInstance();
         Intent i = getIntent();
 
         if(flag)
@@ -62,7 +65,8 @@ public class StudentProfileActivity extends AppCompatActivity {
             studentData.put("Hostel", hostelTextView.getText().toString());
             studentData.put("Phone Number", phoneTextView.getText().toString());
 
-            firestore.collection("Users").document("Students").set(studentData);
+            //firestore.collection("Users").document("Students").set(studentData);
+            database.getReference().child("Users").child("Student").updateChildren(studentData);
         }
 
         /*if(!flag)

@@ -28,7 +28,7 @@ public class StudentEditActivity extends AppCompatActivity {
     Button saveButton;
     FirebaseFirestore firestore;
     String name, roll, hostel, phone;
-    boolean field1 = false;
+    /*boolean field1 = false;
     boolean field2 = false;
     boolean field3 = false;
     boolean field4 = false;
@@ -46,37 +46,6 @@ public class StudentEditActivity extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /*public void saveChanges(View view)
-    {
-        name = nameEditText.getText().toString();
-        roll = rollNumberEditText.getText().toString();
-        hostel = hostelEditText.getText().toString();
-        phone = phoneEditText.getText().toString();
-
-        Map<String, Object> studentData = new HashMap<>();
-        studentData.put("Name", name);
-        studentData.put("Roll Number", roll);
-        studentData.put("Hostel", hostel);
-        studentData.put("Phone Number", phone);
-
-        firestore.collection("Users").document("Students").set(studentData, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task)
-            {
-                if(task.isSuccessful())
-                {
-                    Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
-                    startActivity(i);
-                }
-
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "Couldn't update your profile! Try again", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
     }
      */
 
@@ -142,7 +111,8 @@ public class StudentEditActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid)
                             {
-                                field1 = true;
+                                //field1 = true;
+                                StudentProfileActivity.nameTextView.setText(name);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -159,7 +129,8 @@ public class StudentEditActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid)
                             {
-                                field2 = true;
+                                //field2 = true;
+                                StudentProfileActivity.rollNumberTextView.setText(roll);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -176,7 +147,8 @@ public class StudentEditActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid)
                             {
-                                field3 = true;
+                                //field3 = true;
+                                StudentProfileActivity.hostelTextView.setText(hostel);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -193,7 +165,8 @@ public class StudentEditActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid)
                             {
-                                field4 = true;
+                                //field4 = true;
+                                StudentProfileActivity.phoneTextView.setText(phone);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -204,7 +177,10 @@ public class StudentEditActivity extends AppCompatActivity {
                             }
                         });
 
-                navigateBack(field1, field2, field3, field4);
+                //navigateBack(field1, field2, field3, field4);
+                Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(), StudentProfileActivity.class);
+                startActivity(i);
             }
         });
     }

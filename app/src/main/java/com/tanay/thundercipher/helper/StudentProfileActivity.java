@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class StudentProfileActivity extends AppCompatActivity {
 
-    TextView nameTextView, rollNumberTextView, hostelTextView, phoneTextView;
+    static TextView nameTextView, rollNumberTextView, hostelTextView, phoneTextView;
     ImageView profilePicImageView, updatePhotoImageView;
     FirebaseFirestore firestore;
     boolean flag = true;
@@ -38,52 +38,6 @@ public class StudentProfileActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), StudentEditActivity.class);
         startActivity(i);
     }
-
-    /*public void getPhoto()
-    {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, 1);
-    }
-
-    // when all permissions are granted
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if(requestCode == 1)
-        {
-            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED )
-            {
-                getPhoto();
-            }
-        }
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null)         // to make sure user selected an image file
-        {
-            Uri selectedImage = data.getData();
-
-            try
-            {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);          // to retrieve the data and convert it into a Bitmap format
-
-                //add code to upload to firebase storage and then use the uploaded file to set the photo in the imageview
-
-                profilePicImageView.setImageBitmap(bitmap);
-            }
-
-            catch(IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,24 +50,6 @@ public class StudentProfileActivity extends AppCompatActivity {
         profilePicImageView = (ImageView)findViewById(R.id.profilePicImageView);
         phoneTextView = (TextView)findViewById(R.id.phoneTextView);
         updatePhotoImageView = (ImageView)findViewById(R.id.updatePhotoimageView);
-
-        /*updatePhotoImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                // explicitly check for permissions
-                if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                }
-
-                else
-                {
-                    getPhoto();
-                }
-            }
-        });
-         */
 
         firestore = FirebaseFirestore.getInstance();
         Intent i = getIntent();
@@ -129,7 +65,7 @@ public class StudentProfileActivity extends AppCompatActivity {
             firestore.collection("Users").document("Students").set(studentData);
         }
 
-        if(!flag)
+        /*if(!flag)
         {
             Toast.makeText(getApplicationContext(), "I'm running!", Toast.LENGTH_SHORT).show();
 
@@ -149,5 +85,6 @@ public class StudentProfileActivity extends AppCompatActivity {
                 }
             });
         }
+        */
     }
 }

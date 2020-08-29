@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -59,7 +60,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         //firestore = FirebaseFirestore.getInstance();
         Intent i = getIntent();
         database = FirebaseDatabase.getInstance();
-        reference = FirebaseDatabase.getInstance().getReference().child("Users").child("Student");
+        reference = database.getReference().child("Users").child("Student");
 
         reference.addValueEventListener(new ValueEventListener()
         {
@@ -68,24 +69,28 @@ public class StudentProfileActivity extends AppCompatActivity {
             {
                 for(DataSnapshot snap : snapshot.getChildren())
                 {
-                    if(snap.hasChild("Name"))
+                    if(snap.getKey().equals("Name"))
                     {
-                        nameTextView.setText(snap.child("Name").getValue().toString());
+                        //nameTextView.setText(snap.getValue().toString());
+                        Log.i("Name", snap.getValue().toString());
                     }
 
-                    else if(snap.hasChild("Roll Number"))
+                    else if(snap.getKey().equals("Roll Number"))
                     {
-                        rollNumberTextView.setText(snap.child("Roll Number").getValue().toString());
+                        //rollNumberTextView.setText(snap.getValue().toString());
+                        Log.i("Roll Number", snap.getValue().toString());
                     }
 
-                    else if(snap.hasChild("Hostel"))
+                    else if(snap.getKey().equals("Hostel"))
                     {
-                        hostelTextView.setText(snap.child("Hostel").getValue().toString());
+                        //hostelTextView.setText(snap.getValue().toString());
+                        Log.i("Hostel", snap.getValue().toString());
                     }
 
-                    else if(snap.hasChild("Phone Number"))
+                    else if(snap.getKey().equals("Phone Number"))
                     {
-                        phoneTextView.setText(snap.child("Phone Number").getValue().toString());
+                        //phoneTextView.setText(snap.getValue().toString());
+                        Log.i("Phone Number", snap.getValue().toString());
                     }
                 }
             }
@@ -99,24 +104,3 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 }
 
-/*if(!flag)
-        {
-            Toast.makeText(getApplicationContext(), "I'm running!", Toast.LENGTH_SHORT).show();
-
-            firestore.collection("Users").document("Students").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task)
-                {
-                    DocumentSnapshot doc = task.getResult();
-
-                    if (doc != null)
-                    {
-                        nameTextView.setText(doc.get("Name").toString());
-                        rollNumberTextView.setText(doc.get("Roll Number").toString());
-                        hostelTextView.setText(doc.get("Hostel").toString());
-                        phoneTextView.setText(doc.get("Phone Number").toString());
-                    }
-                }
-            });
-        }
-        */

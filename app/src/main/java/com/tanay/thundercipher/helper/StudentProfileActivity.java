@@ -19,7 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +30,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,11 +44,68 @@ public class StudentProfileActivity extends AppCompatActivity {
     ImageView profilePicImageView, updatePhotoImageView;
     FirebaseDatabase database;
     DatabaseReference reference;
+    StorageReference mStorageRef;
 
     public void edit(View view)
     {
         Intent i = new Intent(getApplicationContext(), StudentEditActivity.class);
         startActivity(i);
+    }
+
+    public void getPhoto()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)             //this gets called after the function onActivityResult()
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null)         // to make sure user selected an image file
+        {
+            Uri imageUri = data.getData();
+            //imageView.setImageURI(imageUri);
+
+            uploadPhoto(imageUri);
+        }
+    }
+
+    public void uploadPhoto(Uri imageUri)
+    {
+        final StorageReference photoRef = mStorageRef.child("images/profile");      // for multiple users -> child("Users/" + auth.getCurrentUser().getUid() + "/profile");
+
+        photoRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                    {
+                        // Get a URL to the uploaded content
+                        //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        //imageView.setImageURI(imageUri);
+
+                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri)
+                            {
+                                Picasso.get().load(uri).into(profilePicImageView);
+                                Snackbar.make(findViewById(android.R.id.content), "Upload Successful!", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception exception)
+                    {
+                        Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     @Override
@@ -71,26 +134,26 @@ public class StudentProfileActivity extends AppCompatActivity {
                 {
                     if(snap.getKey().equals("Name"))
                     {
-                        //nameTextView.setText(snap.getValue().toString());
-                        Log.i("Name", snap.getValue().toString());
+                        nameTextView.setText(snap.getValue().toString());
+                        //Log.i("Name", snap.getValue().toString());
                     }
 
                     else if(snap.getKey().equals("Roll Number"))
                     {
-                        //rollNumberTextView.setText(snap.getValue().toString());
-                        Log.i("Roll Number", snap.getValue().toString());
+                        rollNumberTextView.setText(snap.getValue().toString());
+                        //Log.i("Roll Number", snap.getValue().toString());
                     }
 
                     else if(snap.getKey().equals("Hostel"))
                     {
-                        //hostelTextView.setText(snap.getValue().toString());
-                        Log.i("Hostel", snap.getValue().toString());
+                        hostelTextView.setText(snap.getValue().toString());
+                        //Log.i("Hostel", snap.getValue().toString());
                     }
 
                     else if(snap.getKey().equals("Phone Number"))
                     {
-                        //phoneTextView.setText(snap.getValue().toString());
-                        Log.i("Phone Number", snap.getValue().toString());
+                        phoneTextView.setText(snap.getValue().toString());
+                        //Log.i("Phone Number", snap.getValue().toString());
                     }
                 }
             }
@@ -99,6 +162,24 @@ public class StudentProfileActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error)
             {
                 Toast.makeText(getApplicationContext(), "Failed to retrieve information!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        StorageReference finalRef = mStorageRef.child("images/profile");                    // for multiple users -> child("Users/" + auth.getCurrentUser().getUid() + "/profile");
+        finalRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri)
+            {
+                Picasso.get().load(uri).into(profilePicImageView);
+            }
+        });
+
+        updatePhotoImageView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getPhoto();
             }
         });
     }

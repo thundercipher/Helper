@@ -65,7 +65,6 @@ public class StudentEditActivity extends AppCompatActivity {
                 studentData.put("Hostel", hostel);
                 studentData.put("Phone Number", phone);
 
-                //firestore.collection("Users").document("Students").set(studentData);
                 database.getReference().child("Users").child("Student").updateChildren(studentData)
 
                         .addOnSuccessListener(new OnSuccessListener<Void>()
